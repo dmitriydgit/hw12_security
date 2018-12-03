@@ -105,7 +105,7 @@ function addEditable(comments, userId) {
 	return comments.map(comment => {
 		//console.log(userId, comment.user._id)
 		comment.editable = comment.user._id.equals(userId);
-		console.log(comment.editable)
+		//console.log(comment.editable)
 		return comment;
 	});
 };

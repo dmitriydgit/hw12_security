@@ -19,23 +19,27 @@ document.addEventListener("DOMContentLoaded", function () {
 			const headers = new Headers();
 			headers.append('Authorization', apiToken);
 
-			fetch(postsUrl, { method: 'GET', headers: headers })
-				.then(response => {
-					if (response.status === 403) window.location = '/login';
-					return response;
-				})
-				.then(response => response.json())
-				.then(response => {
-					actualPosts = response;
-					renderPosts(actualPosts);
-					renderComments(actualPosts);
-					initListeners();
-				})
-				.catch(e => console.log(e));
+			getPosts(headers)
 		} else {
 			window.location = '/login'
 		}
 
+	}
+
+	function getPosts(authHeaders) {
+		return fetch(postsUrl, { method: 'GET', headers: authHeaders })
+			.then(response => {
+				if (response.status === 403) window.location = '/login';
+				return response;
+			})
+			.then(response => response.json())
+			.then(response => {
+				actualPosts = response;
+				renderPosts(actualPosts);
+				renderComments(actualPosts);
+				initListeners();
+			})
+			.catch(e => console.log(e));
 	}
 
 
@@ -363,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					headers.append('Authorization', apiToken);
 
 
-					fetch(postsUrl, { method: 'PATCH', body: formData, headers: headers })
+					fetch(`${postsUrl}/${id}`, { method: 'PATCH', body: formData, headers: headers })
 						.then(response => {
 							if (response.status === 403) window.location = '/login';
 							return response;
@@ -490,6 +494,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					postPublishCreate.removeEventListener('click', createHandler);
 					postTextCreate.value = '';
 					postAttachCreate.value = '';
+					init();
 				});
 		};
 		postPublishCreate.addEventListener('click', createHandler);

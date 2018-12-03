@@ -21,7 +21,7 @@ function getPostByID(req, res) {
 				console.log(err);
 				res.status(500).json({ success: false, message: 'err.massage' });
 			}
-			console.log("Post found", post)
+			//console.log("Post found", post)
 			res.status(302).json(post);
 		})
 };
@@ -68,9 +68,12 @@ function savePost(postText, postPicture, userId) {
 };
 
 function editPost(req, res) {
+	console.log(req.body)
+
 	var postId = req.params.postId;
 	var postText = req.body.text;
 	var postPicture = req.body.picture;
+	console.log(postId)
 
 	if (req.files) {
 		var fileName = Date.now();
@@ -95,6 +98,7 @@ function editPost(req, res) {
 
 
 function updatePost(postId, postText, postPicture) {
+
 	var post = {
 		text: postText,
 		picture: postPicture,
