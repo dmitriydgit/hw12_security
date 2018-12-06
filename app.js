@@ -5,6 +5,8 @@ const logger = require('morgan');
 const fileUpload = require('express-fileupload');
 const passport = require('passport');
 require('./configs/pasport.config')(passport);// обязательно для аутентификации
+const PostsService = require('./services/postsService');
+const UserModel = require('./models/userModel');
 
 const indexRouter = require('./routes/index');
 const profileRouter = require('./routes/profile');

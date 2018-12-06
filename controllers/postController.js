@@ -1,6 +1,7 @@
 const PostModel = require('../models/postModel');
 const CommentModel = require('../models/commentModel');
-const userModel = require('../models/userModel')
+
+const PostsService = require('../services/postsService');
 
 function getPostList(req, res) {
 	var userId = req.user._id;
@@ -9,7 +10,8 @@ function getPostList(req, res) {
 			console.log(err);
 			res.status(500).json({ success: false, message: 'err.massage' });
 		}
-		res.status(302).json(addEditable(posts, userId));
+		var editedPosts = PostsService.addEditable(posts, userId);
+		res.status(302).json(editedPosts);
 	})
 };
 
@@ -68,12 +70,9 @@ function savePost(postText, postPicture, userId) {
 };
 
 function editPost(req, res) {
-	console.log(req.body)
-
 	var postId = req.params.postId;
 	var postText = req.body.text;
 	var postPicture = req.body.picture;
-	console.log(postId)
 
 	if (req.files) {
 		var fileName = Date.now();
@@ -98,12 +97,10 @@ function editPost(req, res) {
 
 
 function updatePost(postId, postText, postPicture) {
-
 	var post = {
 		text: postText,
 		picture: postPicture,
 	}
-
 	PostModel.findByIdAndUpdate(postId, post, function (err) {
 		if (err) {
 			console.log(err);
@@ -114,7 +111,6 @@ function updatePost(postId, postText, postPicture) {
 
 function deletePost(req, res) {
 	var postId = req.params.postId;
-	//console.log(postId)
 	deletePostById(postId);
 	deleteCommentsByPostId(postId);//удаляем комменты
 	res.status(204).json({ success: true, message: 'deleted' });
@@ -149,10 +145,3 @@ module.exports = {
 	deletePost
 };
 
-
-function addEditable(posts, userId) {
-	return posts.map(post => {
-		post.editable = post.author._id.equals(userId);
-		return post;
-	});
-};

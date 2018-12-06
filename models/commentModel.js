@@ -22,6 +22,7 @@ CommentSchema.statics.findCommentAndPopulateUser = function (postId, cb) {
 	this.find({ "post_id": postId })
 		.populate(`user`)
 		.sort({ publicationDate: -1 })
+		.lean()
 		.exec(cb);
 }
 

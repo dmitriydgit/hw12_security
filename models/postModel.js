@@ -22,8 +22,16 @@ PostSchema.statics.findSortedDsc = function (cb) {
 	this.find({})
 		.populate("author")
 		.sort({ publicationDate: -1 })
+		.lean()
 		.exec(cb)
-}
+};
+
+// PostSchema.statics.addEditable = function (posts, userId) {
+// 	return posts.map(post => {
+// 		post.editable = post.author._id.equals(userId);
+// 		return post;
+// 	});
+// };
 
 PostSchema.pre("save", function (next) {
 	this.publicationDate = Date.now();
@@ -42,6 +50,7 @@ PostSchema.post("save", function (err, post, next) { //ошибки, доп ва
 	validationError.errors[path].name = err.name;
 	next(validationError);
 })
+
 
 // PostSchema.post('find', function (err, comments, UserId, next) {
 // 	if (err) {

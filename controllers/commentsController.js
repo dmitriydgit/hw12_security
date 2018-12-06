@@ -1,4 +1,5 @@
 const CommentModel = require('../models/commentModel');
+const CommentsService = require('../services/commentsService')
 
 
 function getCommentsByPostID(req, res) {
@@ -9,7 +10,8 @@ function getCommentsByPostID(req, res) {
 			console.log(err);
 			res.status(500).json({ success: false, message: 'err.massage' });
 		}
-		res.status(302).json(addEditable(comments, userId));
+		var editedComments = CommentsService.addEditable(comments, userId);
+		res.status(302).json(editedComments);
 	})
 };
 
@@ -38,6 +40,7 @@ function saveComment(commentText, postId, userId) {
 }
 
 function getCommentByID(req, res) {
+	console.log(req.params)
 	var commentId = req.params.commentId;
 	CommentModel.findById(commentId, function (err, comment) {
 		if (err) {
@@ -100,12 +103,3 @@ module.exports = {
 };
 
 
-function addEditable(comments, userId) {
-
-	return comments.map(comment => {
-		//console.log(userId, comment.user._id)
-		comment.editable = comment.user._id.equals(userId);
-		//console.log(comment.editable)
-		return comment;
-	});
-};
